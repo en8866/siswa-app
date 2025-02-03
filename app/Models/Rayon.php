@@ -9,21 +9,9 @@ class Rayon extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name'];
     protected $table = 'rayons';
-    protected $guarded = ['id'];
+    protected $fillable = ['rayon'];
 
-    public function students()
-    {
-        return $this->hasMany(Student::class, 'rayon_id', 'id');
-    }
-
-    public function scopeByName($query, $name)
-    {
-        return $query->where('name', $name);
-    }
-
-    public function getFormattedNameAttribute()
-    {
-        return strtoupper($this->name);
-    }
+    public function siswa()
 }
