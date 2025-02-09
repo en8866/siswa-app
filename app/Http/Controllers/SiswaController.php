@@ -1,13 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Http\Controllers\Controller;
 use App\Models\Siswa;
 use App\Models\User;
-use App\Models\Rayon;
 use Illuminate\Http\Request;
-
 class SiswaController extends Controller
 {
     /**
@@ -16,20 +12,17 @@ class SiswaController extends Controller
     public function index()
     {
         //
-        $siswas = Siswa::with('rayon')->get();
+        $siswas = Siswa::all();
         return view('siswa.index', compact('siswas'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         //
-        $rayons = Rayon::all();
-        return view('siswa.create', compact('rayons'));
+        return view('siswa.create');
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -37,17 +30,23 @@ class SiswaController extends Controller
     {
         //
         $request->validate([
-            'name' => 'required',
-            'NIS' => 'required',
-            'rayon_id' => 'required',
-            'rombel' => 'required',
+            'name'=>'required',
+            'NIS'=>'required|unique:siswa,NIS',
+            'rayon'=>'required',
+            'rombel'=>'required',
         ]);
-
-        Siswa::create($request->all());
-
-        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan');
+        $proses = Siswa::create([
+            'name' => $request->name,
+            'NIS' => $request->NIS,
+            'rayon' => $request->rayon,
+            'rombel' => $request->rombel,
+        ]);
+        if ($proses) {
+            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan');
+        } else {
+            return redirect()->back()->with('failed', 'Data siswa gagal ditambahkan');
+        }
     }
-
     /**
      * Display the specified resource.
      */
@@ -55,18 +54,15 @@ class SiswaController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
     {
         //
-        $siswa = Siswa::findOrFail($id);
-        $rayons = Rayon::all();
-        return view('siswa.edit', compact('siswa', 'rayons'));
+        $siswa = Siswa::where('id',$id)->first();
+        return view('siswa.edit', compact('siswa'));
     }
-
     /**
      * Update the specified resource in storage.
      */
@@ -75,30 +71,26 @@ class SiswaController extends Controller
         //
         $request->validate([
             'name' => 'required',
-            'NIS' => 'required|unique:siswa,NIS,' . $id,
-            'rayon_id' => 'required',
+            'NIS' => 'required',
+            'rayon' => 'required',
             'rombel' => 'required',
         ]);
-
-        $siswa = Siswa::findOrFail($id);
-        $siswa->update($request->all());
-
-
+        $siswa = Siswa::where('id', $id)->first();
+        $siswa->update([
+            'name' => $request->name,
+            'NIS' => $request->NIS,
+            'rayon' => $request->rayon,
+            'rombel' => $request->rombel,
+        ]);
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diubah');
-
     }
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
         //
-        $siswa = Siswa::find($id);
-        if (!$siswa) {
-            return redirect()->route('siswa.index')->with('deleted', 'Data siswa tidak ditemukan');
-        }
-        $siswa->delete();
-        return redirect()->route('siswa.index')->with('deleted', 'Data siswa berhasil dihapus');
+        Siswa::where('id', $id)->delete();
+        return redirect()->back()->with('deleted', 'Data siswa berhasil dihapus');
     }
 }

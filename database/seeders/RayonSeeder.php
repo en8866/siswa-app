@@ -16,7 +16,6 @@ class RayonSeeder extends Seeder
                 'Sukasari',
                 'Tajur',
                 'Cibedug'];
-
         foreach ($rayons as $rayon) {
             Rayon::create(['name' => $rayon]);
         }
