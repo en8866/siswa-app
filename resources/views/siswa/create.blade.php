@@ -38,7 +38,6 @@
                             </option>
                         @endforeach
                     </select>
-
                 </div>
                 <div class="mb-3 row">
                     <label for="rombel" class="col-sm-3 col-form-label">Rombel:</label>
