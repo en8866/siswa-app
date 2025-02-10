@@ -24,13 +24,13 @@
             @php
                 $no = 1;
             @endphp
-            @foreach ($siswas as $siswa)
+            @foreach ($siswa as $siswa)
                 <tr>
                     <td>{{ $no++ }}</td>
                     <td>{{ $siswa->name }}</td>
                     <td>{{ $siswa->NIS }}</td>
                     <td>{{ $siswa->rombel }}</td>
-                    <td>{{ $siswa->rayon->name }}</td>
+                    <td>{{ isset($siswa->Rayon) ? $siswa->Rayon->name : 'Tidak Ada Rayon' }}</td>
                     <td class="d-flex justify-content-center">
                         <a href="{{ route('siswa.edit', $siswa->id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
                         <button class="btn btn-danger btn-sm" onclick="showModal('{{ $siswa->id }}', '{{ $siswa->name }}')">Hapus</button>

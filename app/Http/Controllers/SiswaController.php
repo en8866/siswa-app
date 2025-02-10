@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Siswa;
+use App\Models\Rayon;
 use App\Models\User;
 use Illuminate\Http\Request;
 class SiswaController extends Controller
@@ -12,8 +13,9 @@ class SiswaController extends Controller
     public function index()
     {
         //
-        $siswas = Siswa::all();
-        return view('siswa.index', compact('siswas'));
+        $siswa = Siswa::with('rayon')->get();
+        return view('siswa.index', compact('siswa'));
+
     }
     /**
      * Show the form for creating a new resource.
@@ -21,7 +23,8 @@ class SiswaController extends Controller
     public function create()
     {
         //
-        return view('siswa.create');
+        $rayons = Rayon::all(); // Ambil semua data rayon
+        return view('siswa.create', compact('rayons'));
     }
     /**
      * Store a newly created resource in storage.
@@ -30,15 +33,15 @@ class SiswaController extends Controller
     {
         //
         $request->validate([
-            'name'=>'required',
-            'NIS'=>'required|unique:siswa,NIS',
-            'rayon'=>'required',
-            'rombel'=>'required',
+            'name' => 'required',
+            'NIS' => 'required|unique:siswa,NIS',
+            'rayon_id' => 'required|exists:rayons,id',
+            'rombel' => 'required',
         ]);
         $proses = Siswa::create([
             'name' => $request->name,
             'NIS' => $request->NIS,
-            'rayon' => $request->rayon,
+            'rayon_id' => $request->rayon_id,
             'rombel' => $request->rombel,
         ]);
         if ($proses) {
@@ -60,7 +63,7 @@ class SiswaController extends Controller
     public function edit($id)
     {
         //
-        $siswa = Siswa::where('id',$id)->first();
+        $siswa = Siswa::where('id', $id)->first();
         return view('siswa.edit', compact('siswa'));
     }
     /**
@@ -72,14 +75,14 @@ class SiswaController extends Controller
         $request->validate([
             'name' => 'required',
             'NIS' => 'required',
-            'rayon' => 'required',
+            'rayon_id' => 'required',
             'rombel' => 'required',
         ]);
         $siswa = Siswa::where('id', $id)->first();
         $siswa->update([
             'name' => $request->name,
             'NIS' => $request->NIS,
-            'rayon' => $request->rayon,
+            'rayon_id' => $request->rayon_id,
             'rombel' => $request->rombel,
         ]);
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diubah');

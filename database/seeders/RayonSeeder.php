@@ -9,15 +9,10 @@ class RayonSeeder extends Seeder
      */
     public function run(): void
     {
-        $rayons = ['Cisarua',
-                'Cicurug',
-                'Ciawi',
-                'Wikrama',
-                'Sukasari',
-                'Tajur',
-                'Cibedug'];
-        foreach ($rayons as $rayon) {
-            Rayon::create(['name' => $rayon]);
-        }
-    }
+        Rayon::create(['name' => 'Tajur']);
+        Rayon::create(['name' => 'Cibedug']);
+        Rayon::create(['name' => 'Sukasari']);
+        Rayon::create(['name' => 'Cisarua']);
+}
+    
 }
