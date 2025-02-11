@@ -21,7 +21,7 @@
             @php
                 $no = 1;
             @endphp
-            @foreach ($rayon as $rayon)
+            @foreach ($rayons as $rayon)
                 <tr>
                     <td>{{ $no++ }}</td>
                     <td>{{ $rayon->name }}</td>

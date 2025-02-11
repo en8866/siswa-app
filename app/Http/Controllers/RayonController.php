@@ -40,30 +40,24 @@ class RayonController extends Controller
     }
 
     /**
-     * Show the specified resource.
-     */
-    public function show(Rayon $rayon)
-    {
-        return view('rayon.show', compact('rayon'));
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Rayon $rayon)
+    public function edit($id)
     {
+        $rayon = Rayon::findOrFail($id);
         return view('rayon.edit', compact('rayon'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Rayon $rayon)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|unique:rayons,name,' . $rayon->id,
+            'name' => 'required|unique:rayons,name,' . $id,
         ]);
 
+        $rayon = Rayon::findOrFail($id);
         $rayon->update([
             'name' => $request->name,
         ]);
@@ -74,8 +68,9 @@ class RayonController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Rayon $rayon)
+    public function destroy($id)
     {
+        $rayon = Rayon::findOrFail($id);
         $rayon->delete();
         return redirect()->route('rayon.index')->with('deleted', 'Rayon berhasil dihapus');
     }

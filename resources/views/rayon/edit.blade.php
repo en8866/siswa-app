@@ -20,13 +20,6 @@
             </div>
         </div>
 
-        <div class="mb-3 row">
-            <label for="pembimbing" class="col-sm-3 col-form-label">Pembimbing:</label>
-            <div class="col-sm-9">
-                <input type="text" name="pembimbing" id="pembimbing" class="form-control" value="{{ $rayon->pembimbing }}" placeholder="Masukkan nama pembimbing" required>
-            </div>
-        </div>
-
         <div class="text-center">
             <button type="submit" class="btn btn-primary btn-block mt-3">Ubah Data</button>
         </div>
