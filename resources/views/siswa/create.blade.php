@@ -39,17 +39,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="mb-3 row">
-                    <label for="rombel" class="col-sm-3 col-form-label">Rombel:</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="rombel" id="rombel" class="form-control" value="{{ old('rombel') }}"
-                            placeholder="Masukkan rombel" required>
-                    </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="rombel" class="col-sm-3 col-form-label">Rombel:</label>
+                <div class="col-sm-9">
+                    <input type="text" name="rombel" id="rombel" class="form-control" value="{{ old('rombel') }}"
+                        placeholder="Masukkan rombel" required>
                 </div>
+            </div>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-block mt-3">Tambah Data</button>
-                </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-block mt-3">Tambah Data</button>
+            </div>
         </form>
     </div>
 </div>
