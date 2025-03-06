@@ -1,77 +1,69 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\Rayon;
+use App\Repositories\Contracts\RayonRepositoryInterface;
 use Illuminate\Http\Request;
 
-class RayonController extends Controller
-{
+class RayonController extends Controller {
+    protected $rayonRepository;
+
+    public function __construct(RayonRepositoryInterface $rayonRepository) {
+        $this->rayonRepository = $rayonRepository;
+    }
+
     /**
-     * Display a listing of the resource.
+     * Tampilkan semua rayon.
      */
-    public function index()
-    {
-        $rayons = Rayon::all();
+    public function index() {
+        $rayons = $this->rayonRepository->getAll();
         return view('rayon.index', compact('rayons'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Tampilkan form tambah rayon.
      */
-    public function create()
-    {
+    public function create() {
         return view('rayon.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Simpan data rayon baru.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
+    public function store(Request $request) {
+        $data = $request->validate([
             'name' => 'required|unique:rayons,name',
         ]);
 
-        Rayon::create([
-            'name' => $request->name,
-        ]);
-
+        $this->rayonRepository->create($data);
         return redirect()->route('rayon.index')->with('success', 'Rayon berhasil ditambahkan');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Tampilkan form edit rayon.
      */
-    public function edit($id)
-    {
-        $rayon = Rayon::findOrFail($id);
+    public function edit($id) {
+        $rayon = $this->rayonRepository->findById($id);
         return view('rayon.edit', compact('rayon'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Perbarui data rayon.
      */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
+    public function update(Request $request, $id) {
+        $data = $request->validate([
             'name' => 'required|unique:rayons,name,' . $id,
         ]);
 
-        $rayon = Rayon::findOrFail($id);
-        $rayon->update([
-            'name' => $request->name,
-        ]);
-
+        $this->rayonRepository->update($id, $data);
         return redirect()->route('rayon.index')->with('success', 'Rayon berhasil diperbarui');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Hapus rayon.
      */
-    public function destroy($id)
-    {
-        $rayon = Rayon::findOrFail($id);
-        $rayon->delete();
+    public function destroy($id) {
+        $this->rayonRepository->delete($id);
         return redirect()->route('rayon.index')->with('deleted', 'Rayon berhasil dihapus');
     }
 }

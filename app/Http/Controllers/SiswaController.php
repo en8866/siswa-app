@@ -1,99 +1,87 @@
 <?php
-namespace App\Http\Controllers;
-use App\Http\Controllers\Controller;
-use App\Models\Siswa;
-use App\Models\Rayon;
-use App\Models\User;
-use Illuminate\Http\Request;
-class SiswaController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-        $siswa = Siswa::with('rayon')->get();
-        return view('siswa.index', compact('siswa'));
 
+namespace App\Http\Controllers;
+
+use App\Repositories\Contracts\SiswaRepositoryInterface;
+use App\Models\Rayon;
+use Illuminate\Http\Request;
+
+
+class SiswaController extends Controller {
+    protected $siswaRepository;
+
+    public function __construct(SiswaRepositoryInterface $siswaRepository) {
+        $this->siswaRepository = $siswaRepository;
     }
+
     /**
-     * Show the form for creating a new resource.
+     * Tampilkan semua siswa.
      */
-    public function create()
-    {
-        //
-        $rayons = Rayon::all(); // Ambil semua data rayon
+    public function index() {
+        $siswa = $this->siswaRepository->getAll();
+        return view('siswa.index', compact('siswa'));
+    }
+
+    /**
+     * Tampilkan form tambah siswa.
+     */
+    public function create() {
+        $rayons = Rayon::all(); // Ambil semua rayon
         return view('siswa.create', compact('rayons'));
     }
+
     /**
-     * Store a newly created resource in storage.
+     * Simpan data siswa baru.
      */
-    public function store(Request $request)
-    {
-        //
-        $request->validate([
+    public function store(Request $request) {
+        $data = $request->validate([
             'name' => 'required',
             'NIS' => 'required|unique:siswa,NIS',
             'rayon_id' => 'required|exists:rayons,id',
             'rombel' => 'required',
         ]);
-        $proses = Siswa::create([
-            'name' => $request->name,
-            'NIS' => $request->NIS,
-            'rayon_id' => $request->rayon_id,
-            'rombel' => $request->rombel,
-        ]);
-        if ($proses) {
-            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan');
-        } else {
-            return redirect()->back()->with('failed', 'Data siswa gagal ditambahkan');
-        }
+
+        $this->siswaRepository->create($data);
+        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan');
     }
+
     /**
-     * Display the specified resource.
+     * Tampilkan detail siswa (opsional).
      */
-    public function show(Siswa $siswa)
-    {
-        //
+    public function show($id) {
+        $siswa = $this->siswaRepository->findById($id);
+        return view('siswa.show', compact('siswa'));
     }
+
     /**
-     * Show the form for editing the specified resource.
+     * Tampilkan form edit siswa.
      */
-    public function edit($id)
-    {
-        //
-        $siswa = Siswa::where('id', $id)->first();
-        return view('siswa.edit', compact('siswa'));
+    public function edit($id) {
+        $siswa = $this->siswaRepository->findById($id);
+        $rayons = Rayon::all();
+        return view('siswa.edit', compact('siswa', 'rayons'));
     }
+
     /**
-     * Update the specified resource in storage.
+     * Perbarui data siswa.
      */
-    public function update(Request $request, $id)
-    {
-        //
-        $request->validate([
+    public function update(Request $request, $id) {
+        $data = $request->validate([
             'name' => 'required',
             'NIS' => 'required',
             'rayon_id' => 'required',
             'rombel' => 'required',
         ]);
-        $siswa = Siswa::where('id', $id)->first();
-        $siswa->update([
-            'name' => $request->name,
-            'NIS' => $request->NIS,
-            'rayon_id' => $request->rayon_id,
-            'rombel' => $request->rombel,
-        ]);
+
+        $this->siswaRepository->update($id, $data);
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diubah');
     }
+
     /**
-     * Remove the specified resource from storage.
+     * Hapus siswa.
      */
-    public function destroy($id)
-    {
-        //
-        Siswa::where('id', $id)->delete();
+    public function destroy($id) {
+        $this->siswaRepository->delete($id);
         return redirect()->back()->with('deleted', 'Data siswa berhasil dihapus');
     }
 }
